@@ -66,4 +66,33 @@ class PlugView (ctx : Context) : View(ctx) {
             }
         }
     }
+    data class Plug (var i : Int, val state : State = State()) {
+        fun draw (canvas : Canvas, paint : Paint) {
+            val w = canvas.width.toFloat()
+            val h = canvas.height.toFloat()
+            val size = Math.min(w, h)/ 4
+            paint.strokeWidth = size/12
+            paint.style = Paint.Style.STROKE
+            paint.color = Color.WHITE
+            paint.strokeCap = Paint.Cap.ROUND
+            canvas.save()
+            canvas.translate(-size/10 + (w / 2 + size/10) * state.scales[0] , h / 2)
+            canvas.rotate(90f * state.scales[1])
+            canvas.drawArc(RectF(-size, -size/2, 0f, size/2), -90f, 180f, true, paint)
+            canvas.save()
+            canvas.translate(- (h/2+size/10) * state.scales[2], 0f)
+            for (i in 0..1) {
+                val y : Float = -size/4 * (1 - 2 * i)
+                canvas.drawLine(-size/2 - size/3 , y, -size/2, y, paint)
+            }
+            canvas.restore()
+            canvas.restore()
+        }
+        fun update (stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+    }
 }
