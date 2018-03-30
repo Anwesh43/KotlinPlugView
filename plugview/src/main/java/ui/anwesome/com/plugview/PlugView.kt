@@ -95,4 +95,22 @@ class PlugView (ctx : Context) : View(ctx) {
             state.startUpdating(startcb)
         }
     }
+    data class Renderer (var view : PlugView) {
+        val plug : Plug = Plug(0)
+        val animator : Animator = Animator(view)
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            plug.draw(canvas, paint)
+            animator.animate {
+                plug.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            plug.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
